@@ -12,5 +12,28 @@
   notify:
     - restart fail2ban
 
+- name: Configure custom fail2ban filters
+  template:
+    src: 'etc/fail2ban/filter.d/filter.local.j2'
+    dest: '/etc/fail2ban/filter.d/{{ item.filename | d(item.name) }}.local'
+    owner: 'root'
+    group: 'root'
+    mode: '0644'
+  with_items: '{{ fail2ban_filters }}'
+  notify: [ 'restart fail2ban' ]
+  when: ((item.name is defined and item.name) and
+         (item.failregex is defined and item.failregex) and
+         (item.state | d('present') not in ['absent']))
+
+- name: Remove custom fail2ban filters if requested
+  file:
+    path: '/etc/fail2ban/filter.d/{{ item.filename | d(item.name) }}.local'
+    state: 'absent'
+  with_items: '{{ fail2ban_filters }}'
+  notify: [ 'restart fail2ban' ]
+  when: ((item.name is defined and item.name) and
+         (item.state | d('present') in ['absent']))
+
 - name: ensure fail2ban starts on a fresh reboot
   service: name=fail2ban state=started enabled=yes
+
