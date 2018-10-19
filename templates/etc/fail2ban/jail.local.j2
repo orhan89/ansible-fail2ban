@@ -48,6 +48,9 @@ action = %({{ service.action }})s
 {% if service.banaction is defined %}
 banaction = {{ service.banaction }}
 {% endif %}
+{% if service.logtimezone is defined %}
+logtimezone = {{ service.logtimezone }}
+{% endif %}
 
 {% endfor %}
 {% endif %}
