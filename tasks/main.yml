@@ -22,7 +22,7 @@
     - restart fail2ban
 
 - name: copy init script
-  cp:
+  copy:
     src: '{{ fail2ban_dest }}/files/debian-initd'
     dest: '/etc/init.d/fail2ban'
   when: fail2ban_install_source
