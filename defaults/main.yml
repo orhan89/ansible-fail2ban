@@ -1,4 +1,8 @@
 ---
+fail2ban_install_source: false
+fail2ban_repo: 'https://github.com/fail2ban/fail2ban'
+fail2ban_dest: /tmp/fail2ban
+fail2ban_version: 0.10.4
 fail2ban_loglevel: INFO
 fail2ban_logtarget: /var/log/fail2ban.log
 fail2ban_socket: /var/run/fail2ban/fail2ban.sock

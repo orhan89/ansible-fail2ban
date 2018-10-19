@@ -3,6 +3,37 @@
   apt: pkg=fail2ban state=latest update_cache=true cache_valid_time={{ apt_cache_valid_time }}
   notify:
     - restart fail2ban
+  when: not fail2ban_install_source
+
+- name: clone fail2ban source
+  git:
+    repo: '{{ fail2ban_repo }}'
+    dest: '{{ fail2ban_dest }}'
+    version: '{{ fail2ban_version }}'
+  when: fail2ban_install_source
+
+- name: install fail2ban
+  shell: python setup.py install
+  args:
+    chdir: '{{ fail2ban_dest }}'
+    creates: /etc/fail2ban/installed
+  when: fail2ban_install_source
+  notify:
+    - restart fail2ban
+
+- name: copy init script
+  cp:
+    src: '{{ fail2ban_dest }}/files/debian-initd'
+    dest: '/etc/init.d/fail2ban'
+  when: fail2ban_install_source
+  notify:
+    - restart fail2ban
+
+- name: enable fail2ban service
+  service:
+    name: fail2ban
+    enabled: yes
+  when: fail2ban_install_source
 
 - name: ensure fail2ban is configured
   template: src={{ item }}.j2 dest=/{{ item }}
