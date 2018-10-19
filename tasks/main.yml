@@ -25,6 +25,7 @@
   copy:
     src: '{{ fail2ban_dest }}/files/debian-initd'
     dest: '/etc/init.d/fail2ban'
+    remote_src: yes
   when: fail2ban_install_source
   notify:
     - restart fail2ban
